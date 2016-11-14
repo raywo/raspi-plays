@@ -39,6 +39,7 @@ def cleanup():
     GPIO.output(st_cp, GPIO.LOW)
     GPIO.output(sh_cp, GPIO.LOW)
     GPIO.cleanup()
+    print("Shift register cleaned up.")
 
 
 '''Write data to the shift register of the 595 chip.

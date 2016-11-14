@@ -23,6 +23,7 @@ def setup(sd_pin, st_cp_pin, sh_cp_pin, delay=0.05):
 '''
 def __cleanup():
     sr595.cleanup()
+    print("flowing_serial cleaned up.")
 
 
 def __ascending_loop(stopper):
