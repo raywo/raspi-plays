@@ -113,6 +113,10 @@ def start_listening(cw_callback_func=__cw_rotation,
     cw_callback = cw_callback_func
     ccw_callback = ccw_callback_func
 
+    # bouncetime is preventing multiple callback for just one event. Within
+    # 100 milliseconds everything on this port is ignored. Play with this
+    # setting if you getting multiple callback for one click on the rotary
+    # enoceder.
     GPIO.add_event_detect(dt, GPIO.FALLING, callback=__read_status, bouncetime=100)
     GPIO.add_event_detect(sw, GPIO.FALLING, callback=btn_callback_func)
 
