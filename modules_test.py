@@ -1,17 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import leds.flowing_serial as flowing
 import leds.breathing as breathing
-import support.rotary_encoder_with_interrupt as rotary
+from classes.RotaryEncoder import RotaryEncoder
+from classes.FlowingLEDs import FlowingLEDs
+from classes.ShiftRegister595 import ShiftRegister595
 
-counter = 0
+delay = 0.3
+stepping = 0.005 # 0.1
 
 def flow():
-    #pins = [ 25, 8, 7, 1, 12, 16, 20, 21 ]
-    #flowing.setup(pins)
-    flowing.setup(16, 20, 21, 0.8)
-    flowing.start_flow()
+    global flowing_leds
+
+    shift_register = ShiftRegister595(16, 20, 21)
+    flowing_leds = FlowingLEDs(shift_register, delay)
+    flowing_leds.start_flow()
 
 
 def breathe():
@@ -21,28 +24,39 @@ def breathe():
 
 
 def rotary_enc():
-    rotary.setup(19, 26, 13)
+    global rotary
+    global delay
+
+    delay = 0
+    rotary = RotaryEncoder(19, 26, 13)
     rotary.start_listening(cw_callback_func=__my_cw, ccw_callback_func=__my_ccw)
 
 
 def __my_cw():
-    global counter
-    counter = counter + 1
-    print("counter: %d" % counter)
+    global delay
+
+    delay = delay + stepping
+    print("delay: %f" % delay)
+    flowing_leds.set_inbetween_delay(delay)
 
 def __my_ccw():
-    global counter
-    counter = counter - 1
-    print("counter: %d" % counter)
+    global delay
+    delay = delay - stepping
+
+    if delay < 0:
+        delay = 0
+
+    print("delay: %f" % delay)
+    flowing_leds.set_inbetween_delay(delay)
 
 
 if __name__ == '__main__':
     #breathe()
-    #flow()
+    flow()
     rotary_enc()
 
     raw_input('Enter drücken zum Beenden')
 
-    #flowing.stop_flow()
+    flowing_leds.stop_flow()
     rotary.stop_listening()
     #breathing.stop_breathing()

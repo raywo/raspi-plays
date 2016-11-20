@@ -5,7 +5,9 @@ import time
 import thread
 import threading
 import RPi.GPIO as GPIO
-import support.shift_register_595 as sr595
+#import support.shift_register_595 as sr595
+from classes.ShiftRegister595 import ShiftRegister595
+
 
 inbetween_loop_delay = 0.035 # 0.03
 
@@ -14,9 +16,10 @@ pattern = [0x80, 0xC0, 0x40, 0x60, 0x20, 0x30, 0x10, 0x18, 0x08, 0x0C, 0x04, 0x0
 
 def setup(sd_pin, st_cp_pin, sh_cp_pin, delay=0.05):
     global loop_delay
+    global sr595
     loop_delay = delay
 
-    sr595.setup(sd_pin, st_cp_pin, sh_cp_pin)
+    sr595 = ShiftRegister595(sd_pin, st_cp_pin, sh_cp_pin)
 
 
 ''' Räumt alles wieder auf.
